@@ -1,71 +1,34 @@
-###### Project Author: Praveen
-###### Date: 8/15/2017
 
-## Traffic Signal Detection and Classification
+# Traffic Sign Detection and Classification Using Convolutional Neural Networks
 
+## Overview
+Around 1.25 million people die every year due to traffic accidents. Human negligence is found to be one of the biggest reason. Autonomous cars could solve this problem, but one of the challenges they face is detecting and identifying traffic signs. Although many have researched in the same topic, most of them use images of just street signs where there is very less noise and a lot of signal. But in a real world application, cars experience more noise (roads, incoming traffic, trees, buildings etc) than the signal (traffic sign).
 
-#### Description
+Through this project, I wanted to see how Convolutional Neural Network models perform when they come across such images which have very less signal, and identify ways in which I can improve their performance. 
 
-Through this project I am interested in identifying traffic signs in a given image, and classify them based on their type.
+## Dataset
+The data was obtained from University of California, San Diego's Laboroatory of Safe and Intelligent Automobiles (LISA). Their traffic sign dataset consisted of 6610 annotated frames of 47 different types of traffic signs in the US. The images were obtained from different cameras, hence their sizes varied from 640x480 to 1024x522 pixels. Each sign had information about the sign type position and size of the image which was available as a separate text file. 
 
-My motivation to work on this problem:
-- Understanding Neural Networks and Deep Learning, while learning their necessity over other machine learning models
-- Intersection of my interest in the automotive industry and machine learning
-- Solving complex problems which are currently worked on in the industry
+## Pre-Processing
+For the final model, I built my own image Data generator function, which performed augmentation, resizing processes and calculated the new bounding box for the image and returns in batches.
 
-#### Potential Workflow
-My goals for this project are:
-- Identify and classify traffic signs present in the images through SVM and Gradient boosting models
-- Compare the performance of my model against a pre-trained Convolutional Neural Network model
-- (Expecting the pre-trained CNN model to perform better) Modify the CNN model to improve chosen metric
-- Build a CNN architecture from scratch, and compare the performance with previous models
-- Extend the best model from above to work on videos instead of images for classification
+## Metrics and Loss Functions
+For the loss function to train the model, I used a modified mean squared error for the bounding box head, and softmax for the classification head. For the metrics, since it was a multiclass classification problem, accuracy did not give me accurate results. Keras did not implement precision and recall for the same. Hence I used the loss function, as it had more accurate information than other metrics. For the test data, I computed the individual precision and recall rate for each class.
 
-#### Presentation
-Visual demonstration of my model by testing with pictures/videos of streets near Galvanize and a presentation on the process
+## Model Development
+I initially started of with a transfer learning model, but its performance was pretty low, as there was a lot of noise in the data. Hence I built my own architecture and implemented a version of the Fast-RCNN method, the final model has a bounding box regressor output and a classification output, whose combined loss changes the weights of the model. Hence when predicting, I remove the bounding box regressor head, thereby having only a classification output. This model proved to be the most effective.
 
-#### Next Step:
-Sample my data, and create a SVM model and Gradient Boosting Classifier model.
+## Result and Inference
+For my test data, the STOP sign class had a high recall value. But still my model was not able to accurately predict the Speed Limit sign and the Pedestrian Crossing sign. Going through the data I attributed the poor performance to:
+1. The speed limit class had different values in the signs (40, 45, 50, 55, 65 etc)
+2. The shape, colour and position of the pedestrian crossing signs were such that they blended with the surroundings making it hard to identify.
 
-#### Data:
-The dataset and description is provided here:
-http://cvrr.ucsd.edu/LISA/lisa-traffic-sign-dataset.html
+## Files in src and it's use
 
-###### Description of Dataset:
-1. 47 US sign types
-2. 7855 annotations on 6610 frames.
-3. Sign sizes from 6x6 to 167x168 pixels.
-4. Images obtained from different cameras. Image sizes vary from 640x480 to 1024x522 pixels.
-5. Some images in color and some in grayscale.
-6. Full version of the dataset includes videos for all annotated signs.
-7. Each sign is annotated with sign type, position, size, occluded (yes/no), on side road (yes/no).
-8. All annotations are save in plain text .csv-files.
-9. Includes a set of Python tools to handle the annotations and easily extract relevant signs from the dataset.
+* final_model.py - Predicts the fraud risk level based on the probability
 
+## Rough timeline
 
-<p align='center'>
-<img src="/img/signalAhead_1330547327.avi_image4.png" alt="Drawing" style="width: 500px;", align:center/>
-</p>
+* Week 1: Worked on Transfer Learning, used VGG to build my base model. Read through multiple research papers to find the optimal way to increase performance. Performed Augmentation processes.
+* Week 2: Created my own model, and overcame various roadblocks. Improved performance by implementing the Fast-RCNN approach. Implemented my own augmentation function, to improve performance of model.
 
-
-###### Data Pipeline:
-- Split data into train, test and validation sets
-- Perform Data Augmentation if necessary
-- Convert images into matrix form
-- Pass the matrix through a classification model
-- Understand the performance of model and tune for maximum performance
-- Perform the above two steps for all the models prescribed in the description section
-
-###### Potential Problems:
-From my understanding, all potential problems reported below needs to be worked on based on the performance of the model
-- Traffic signs being distributed in the images, and presence of other objects might reduce the accuracy of the model
- - Potential solution: Run a object detection model first, and perform classification on the results from that
-- Presence of some signs in only one side of the picture, might train the model to classify that sign only if it's in that direction
- - Potential Solution: Augment available data to include other possibilities
-- Data available might not be sufficient to train a CNN from scratch
- - Potential Solution: Perform Data Augmentation by translating or flipping the model. If that does not prove satisfactory, use the German traffic Sign data.
-- Dataset might be imbalanced
- - Data Augmentation would also solve this scenario
-
-###### How far do you anticipate to take the project in the allotted time frame?
-Within the deadline, I hope to complete building a CNN architecture from scratch and compare its performance against a pre-trained CNN model

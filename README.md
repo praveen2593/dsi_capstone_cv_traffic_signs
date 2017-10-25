@@ -19,12 +19,12 @@ For the final model, I built my own image Data generator function, which perform
 
 ### Metrics and Loss Functions - utils.py
 For the loss function to train the model, I used a modified mean squared error for the bounding box head, and softmax for the classification head. For the metrics, since it was a multiclass classification problem, accuracy did not give me accurate results. Keras did not implement precision and recall for the same. Hence I used the loss function, as it had more accurate information than other metrics. For the test data, I computed the individual precision and recall rate for each class.
-	* msetf: Uses the mean squared error, but normalizes the result based on image data.
+- msetf: Uses the mean squared error, but normalizes the result based on image data.
 
 ### Model Development - cnn_arch.py
 I initially started of with a transfer learning model, but its performance was pretty low, as there was a lot of noise in the data. Hence I built my own architecture and implemented a version of the Fast-RCNN method, the final model has a bounding box regressor output and a classification output, whose combined loss changes the weights of the model. Hence when predicting, I remove the bounding box regressor head, thereby having only a classification output. This model proved to be the most effective.
-	* create_model: creates the modified architectur with bounding box regressor and classifier heads. 
-	* compile_model: Uses Adam optimizer and loss functions mentioned above to compile the architecture to a model. It then returns the whole model object
+- create_model: creates the modified architectur with bounding box regressor and classifier heads. 
+- compile_model: Uses Adam optimizer and loss functions mentioned above to compile the architecture to a model. It then returns the whole model object
 
 ### Result and Inference
 For my test data, the STOP sign class had a high recall value. But still my model was not able to accurately predict the Speed Limit sign and the Pedestrian Crossing sign. Going through the data I attributed the poor performance to:

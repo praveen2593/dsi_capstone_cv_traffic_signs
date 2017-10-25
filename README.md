@@ -14,9 +14,9 @@ The data was obtained from University of California, San Diego's Laboroatory of 
 ### Pre-Processing - augment.py
 For the final model, I built my own image Data generator function, which performed augmentation, resizing processes and calculated the new bounding box for the image and returns in batches.All the functions can be found in the augment.py module.
 
-	* augment_image: This function augments image by randomly translating and rotating them. Rotation is restricted to less than 10degrees while translation is limited to less that 15% of the image length. 
-	* resize_image: This function calculates the modified bounding box information based on the augmentation process. For test data, it only resizes the image.
-	* generator: Creates a custom generator function which yields images in batches. The batch size and image size to be returned can be controlled through the parameters.
+	- augment_image: This function augments image by randomly translating and rotating them. Rotation is restricted to less than 10degrees while translation is limited to less that 15% of the image length. 
+	- resize_image: This function calculates the modified bounding box information based on the augmentation process. For test data, it only resizes the image.
+	- generator: Creates a custom generator function which yields images in batches. The batch size and image size to be returned can be controlled through the parameters.
 
 ### Metrics and Loss Functions - utils.py
 For the loss function to train the model, I used a modified mean squared error for the bounding box head, and softmax for the classification head. For the metrics, since it was a multiclass classification problem, accuracy did not give me accurate results. Keras did not implement precision and recall for the same. Hence I used the loss function, as it had more accurate information than other metrics. For the test data, I computed the individual precision and recall rate for each class.
